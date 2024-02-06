@@ -1,0 +1,21 @@
+<!-- templates/results.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ... -->
+</head>
+<body>
+  <h1>Résultats du Scan</h1>
+  <ul>
+    {% for host, status in scan_results %}
+    <li>{{ host }} - {{ status }}
+       <form action="/get-info" method="post">
+            <input type="hidden" name="ip" value="{{ host }}">
+            <input type="submit" value="Get Info">
+        </form>
+    </li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cartes Réseau</title>
+  </head>
+  <body>
+    <h1>Liste des Cartes Réseau</h1>
+    <ul>
+      {% for item in data %}
+      <li>
+        <strong>Interface:</strong> {{ item['interface'] }}<br />
+        <strong>Adresses:</strong>
+        <ul>
+          {% for address in item['addresses'] %}
+          <li>{{ address['family'] }}: {{ address['address'] }}</li>
+          {% endfor %}
+        </ul>
+      </li>
+      {% endfor %}
+    </ul>
+  <form action="/scan" method="post">
+  <label for="ip">Adresse IP:</label>
+  <input type="text" id="ip" name="ip" required>
+  <input type="submit" value="Scan">
+</form>
+  </body>
+</html>
