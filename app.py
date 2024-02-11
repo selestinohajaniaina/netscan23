@@ -1,6 +1,26 @@
+# import des dependances
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
+import psutil
+import nmap
+import os
 
+def perform_scan(ip):
+    nm = nmap.PortScanner()
+    nm.scan(hosts=ip, arguments='-sn')  # -sn pour le ping scan
+    hosts_list = [(x, nm[x]['status']['state']) for x in nm.all_hosts()]
+    return hosts_list
+
+
+# recherche d'emplacement d'installation du nmap
+# le chemin est seulment pour windows
+nmap_path = 'C:\\Program Files (x86)\\Nmap'
+
+# si le chemin n'est pas exacte
+if nmap_path not in os.environ['PATH']:
+    os.environ['PATH'] += os.pathsep + nmap_path
+
+# configurer premier (main) pour flask
 app = Flask(__name__)
 
 # Connexion à la base de données SQLite (crée le fichier db si inexistant)
@@ -17,8 +37,10 @@ cursor.execute('''
 ''')
 conn.commit()
 
+# url est egal a '/'
 @app.route('/')
 def index():
+    # retourner la page index.html
     return render_template('index.html')
 
 @app.route('/login', methods=['POST'])
@@ -31,9 +53,9 @@ def login():
     user = cursor.fetchone()
 
     if user:
-        return "Connexion réussie."
+        return '<script>document.location.href = "home"</script>'
     else:
-        return "Échec de la connexion. Vérifiez votre nom d'utilisateur et votre mot de passe."
+        return render_template('index.html', err = 'Authentification incorrecte.')
 
 @app.route('/create_account')
 def create_account():
@@ -58,7 +80,29 @@ def register():
     else:
         cursor.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, password))
         conn.commit()
-        return "Compte créé avec succès."
+        return render_template('home.html')
+
+
+@app.route('/home')
+def home():
+    # Obtenir la liste des cartes réseau
+    network_interfaces = psutil.net_if_addrs()
+
+    # Formater les données pour l'affichage
+    formatted_data = []
+    for interface, addresses in network_interfaces.items():
+        info = {'interface': interface, 'addresses': []}
+        for address in addresses:
+            info['addresses'].append({'family': address.family, 'address': address.address})
+        formatted_data.append(info)
+
+    return render_template('home.html', data=formatted_data)
+
+@app.route('/scan', methods=['POST'])
+def scan():
+    ip_subnet = request.form['ip']  # L'utilisateur doit entrer un sous-réseau, par exemple, 192.168.1.0/24
+    scan_results = perform_scan(ip_subnet)
+    return render_template('results.html', scan_results=scan_results)
 
 if __name__ == '__main__':
     app.run(debug=True)

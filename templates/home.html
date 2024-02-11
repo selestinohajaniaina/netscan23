@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='output.css') }}">
+    <title>Cartes Réseau</title>
+  </head>
+  <style>
+    .planet {
+      background-image: url("{{url_for('static', filename='planet.jpg')}}");
+    }
+
+    .anime {
+      animation: anime 4s linear infinite;
+    }
+
+    .anime1 {
+      animation: anime1 4s linear infinite;
+    }
+
+    @keyframes anime {
+      form { transform: translateX(0);}
+      to { transform: translateX(100%);}
+    }
+
+    @keyframes anime1 {
+      form { transform: translateX(100%);}
+      to { transform: translateX(0);}
+    }
+
+  </style>
+  <body class="bg-hack-black text-hack">
+<!-- component -->
+<nav class="shadow-lg shadow-gray-700 font-hack bg-transparent font-bold backdrop-blur-[2px]">
+  <div class="container flex items-center justify-center p-6 mx-auto capitalize">
+      <a href="#" class="border-b-2 border-white mx-1.5 sm:mx-6">home</a>
+
+      <a href="#" class="border-b-2 border-transparent hover:border-white mx-1.5 sm:mx-6">features</a>
+
+      <a href="#" class="border-b-2 border-transparent hover:border-white mx-1.5 sm:mx-6">pricing</a>
+
+      <a href="#" class="border-b-2 border-transparent hover:border-white mx-1.5 sm:mx-6">blog</a>
+
+  </div>
+</nav>
+
+    <div class="flex justify-between">
+      <div>
+        <h1>Liste des Cartes Réseau</h1>
+    <ul>
+      {% for item in data %}
+      <li>
+        <strong>Interface:</strong> {{ item['interface'] }}<br />
+        <strong>Adresses:</strong>
+        <ul>
+          {% for address in item['addresses'] %}
+          <li>{{ address['family'] }}: {{ address['address'] }}</li>
+          {% endfor %}
+        </ul>
+      </li>
+      {% endfor %}
+    </ul>
+      </div>
+      <div class="w-full p-6 relative overflow-hidden">
+        <div class="absolute">
+          <div class="opacity-25 flex justify-arround bg-red-500 w-[95%] anime">
+          {% for i in range(30) %}
+          <div class="m-1">
+            {% if i % 2 == 0 %}
+            {% print(1)%}
+            {% else %}
+            {% print(0)%}
+            {% endif %}
+          </div>
+            {% endfor %}
+        </div>
+        <div class="opacity-25 flex justify-arround bg-red-500 w-[95%] anime1">
+          {% for i in range(30) %}
+          <div class="m-1">
+            {% if i % 2 == 0 %}
+            {% print(1)%}
+            {% else %}
+            {% print(0)%}
+            {% endif %}
+          </div>
+            {% endfor %}
+        </div>
+        </div>
+        <img src="{{url_for('static', filename='planet.jpg')}}" alt="" srcset="">
+      </div>
+      <div class="p-2 m-2 border border-hack"">
+        <h1>Network Adapter:</h1>
+        <ul class="list-disc p-4">
+          {% for item in data %}
+          <li>
+            <p class="font-bold">Interface: <span class="font-light">{{ item['interface'] }}</span></p>
+            <ul class="ml-2">
+              <p>Adresses:</p>
+              {% for address in item['addresses'] %}
+              <li class="ml-2">{{ address['family'] }}: {{ address['address'] }}</li>
+              {% endfor %}
+            </ul>
+          </li>
+          {% endfor %}
+        </ul>
+        <form action="/scan" method="post">
+          <label for="ip">Adresse IP:</label>
+          <input type="text" id="ip" name="ip" required>
+          <input type="submit" value="Scan">
+        </form>
+      </div>
+    </div>
+
+  </body>
+</html>
