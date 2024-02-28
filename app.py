@@ -4,6 +4,10 @@ import sqlite3
 import psutil
 import nmap
 import os
+from pc import PC
+
+my_pc = PC(os)
+# print(my_pc.release())
 
 def perform_scan(ip):
     nm = nmap.PortScanner()
@@ -40,7 +44,6 @@ conn.commit()
 # url est egal a '/'
 @app.route('/')
 def index():
-    # retourner la page index.html
     return render_template('index.html')
 
 @app.route('/login', methods=['POST'])
@@ -80,13 +83,25 @@ def register():
     else:
         cursor.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, password))
         conn.commit()
-        return render_template('home.html')
+        return render_template('index.html', err = 'Connectez-vous manuellemnet pour confirmer.')
 
 
 @app.route('/home')
 def home():
+    print(os)
     # Obtenir la liste des cartes réseau
     network_interfaces = psutil.net_if_addrs()
+
+    prop = {
+        'uid': my_pc.uid(),
+        'user': my_pc.user(),
+        'system': my_pc.system(),
+        'bit': my_pc.bit(),
+        'version': my_pc.version(),
+        'release': my_pc.release(),
+        'dist': my_pc.dist()
+        }
+    # print(prop)
 
     # Formater les données pour l'affichage
     formatted_data = []
@@ -96,7 +111,7 @@ def home():
             info['addresses'].append({'family': address.family, 'address': address.address})
         formatted_data.append(info)
 
-    return render_template('home.html', data=formatted_data)
+    return render_template('home.html', data=formatted_data, propriete=prop)
 
 @app.route('/scan', methods=['POST'])
 def scan():
