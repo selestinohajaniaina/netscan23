@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 import psutil
 import nmap
+import nmap3
 import os
 from pc import PC
 
@@ -12,7 +13,7 @@ my_pc = PC(os)
 def perform_scan(ip):
     nm = nmap.PortScanner()
     nm.scan(hosts=ip, arguments='-sn')  # -sn pour le ping scan
-    hosts_list = [(x, nm[x]['status']['state']) for x in nm.all_hosts()]
+    hosts_list = [(x, nm[x]['status']['state'], nm[x]['status']['reason'], nm[x]['hostnames']) for x in nm.all_hosts()]
     return hosts_list
 
 
