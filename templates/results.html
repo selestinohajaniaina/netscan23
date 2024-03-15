@@ -28,18 +28,19 @@
     <div class="container mt-4 mx-auto">
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
     {% for host, status, reason, hostnames in scan_results %}
-        <form action="/get-info" method="post">
           <div class="card m-2 cursor-pointer border border-gray-400 rounded-lg hover:shadow-md hover:border-opacity-50 transform hover:-translate-y-1 transition-all duration-200">
             <div class="m-3">
               <h2 class="text-lg mb-2">{{ host }}
              <span class="text-sm text-teal-800 font-mono bg-teal-100 inline rounded-full px-2 align-top float-right animate-pulse">{{ status }}</span></h2>
              <p class="font-light font-mono text-sm text-gray-400 hover:text-gray-100 transition-all duration-200">Reason: {{ reason }}</p>
             <p class="font-light font-mono text-sm text-gray-400 hover:text-gray-100 transition-all duration-200" title="Hostnames">Hosts: {{ hostnames }}</p>
-            <button type="submit" class="bg-gray-900 text-white py-3 px-8 mt-4 rounded text-sm font-semibold hover:bg-opacity-75">Get Info</button>
+
+            <a href="./get_info/{{ host }}">
+            <button class="bg-gray-900 text-white py-3 px-8 mt-4 rounded text-sm font-semibold hover:bg-opacity-75">Get Info</button>
+              
+            </a>
             </div>
           </div>
-          <input type="hidden" name="ip" value="{{ host }}">
-        </form>
           {% endfor %}
         </div>
       </div>

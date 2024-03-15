@@ -5,6 +5,9 @@ name = "pypi"
 
 [packages]
 python3-nmap = "*"
+flask = "*"
+psutil = "*"
+python-nmap = "*"
 
 [dev-packages]
 
